@@ -1,7 +1,42 @@
 *** Settings ***
+Test Setup        Open Browser    http://127.0.0.1:8000    chrome
+Test Teardown     Close Browser
 Library           Selenium2Library
 
 *** Test Cases ***
+Login without Username
+    Login    \    205598054
+    Element Text Should Be    //*[@id="app-mount"]/div/section/div/div/div[1]/form/fieldset/div[1]/span    "username" is not allowed to be empty
+
+Login without Password
+    Input Text    name=username    YC Chang
+    Click Element    //*[@id="app-mount"]/div/section/div/div/div[1]/form/fieldset/div[3]/button
+    Element Should Contain    //*[@id="app-mount"]/div/section/div/div/div[1]/form/fieldset/div[2]/span    "password" is not allowed to be empty
+
+Login with invalid user
+    Login    Tom    123456789
+    Element Text Should Be    //*[@id="app-mount"]/div/section/div/div/div[1]/form/div    Username and password combination not found or account is inactive.
+
+My Course Page (YC)
+    Login    YC Chang    205598047
+    CoureInfo Should Be    Pattern-Oriented Software Design    YC Chang    Wed 09:00 ~ 10:00, Fri 10:00 ~ 12:00
+    sleep    1s
+
+My Course Page (CH)
+    Login    CH Liu    205598055
+    CoureInfo Should Be    Software Engineering    CH Liu    Wed 09:00 ~ 10:00, Fri 10:00 ~ 12:00
+    sleep    1s
+
+*** Keywords ***
+CoureInfo Should Be
+    [Arguments]    ${courseName}    ${instructorName}    ${courseTime}
+    sleep    1s
+    Element Text Should Be    //*[@id="main-panel"]/div/div/div/div/div/div/a/div[2]/div/h4/b    ${courseName}
+    Element Should Contain    //*[@id="main-panel"]/div/div/div/div/div/div/a/div[2]/p/span    ${instructorName}
+    Element Should Contain    //*[@id="main-panel"]/div/div/div/div/div/div/a/div[2]/p/span    ${courseTime}
+
 Login
-    Open Browser    http://127.0.0.1:8000    chrome
-    Close Browser
+    [Arguments]    ${username}    ${password}
+    Input Text    name=username    ${username}
+    Input Text    name=password    ${password}
+    Click Element    //*[@id="app-mount"]/div/section/div/div/div[1]/form/fieldset/div[3]/button
