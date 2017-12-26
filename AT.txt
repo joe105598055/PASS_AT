@@ -1,5 +1,5 @@
 *** Settings ***
-Test Setup        Open Browser    http://127.0.0.1:8000    chrome
+Test Setup        Setup
 Test Teardown     Close Browser
 Library           Selenium2Library
 
@@ -27,7 +27,32 @@ My Course Page (CH)
     CoureInfo Should Be    Software Engineering    CH Liu    Wed 09:00 ~ 10:00, Fri 10:00 ~ 12:00
     sleep    1s
 
+Submit Homework
+    Login    james    105598047
+    Wait Until Page Contains Element    xpath://div[contains(@class,"card")]//div[@class="image"]
+    Click Element   xpath://div[contains(@class, "card")]//b[text()="Software Engineering"]
+    Wait Until Page Contains Element    xpath://h4[text()="Software Engineering"]
+    Click Element   xpath://td[text()="Assignment 4"]/..//button
+
+Create Assignment
+    Login  YC Chang  205598047
+    Wait Until Page Contains Element    xpath://div[contains(@class,"card")]//div[@class="image"]
+    Click Element   xpath://div[contains(@class, "card")]//b[text()="Pattern-Oriented Software Design"]
+    Wait Until Page Contains Element    xpath://div[@class="navbar-header"]/a[text()="Assignments"]
+    Wait Until Element Is Visible   xpath://button[text()="Create an New Assignment"]
+    Click Button    xpath://button[text()="Create an New Assignment"]
+    Wait Until Element Is Visible   xpath://div[contains(@class, "modal-dialog")]
+    Input Text  xpath://label[text()="Name"]/following-sibling::input   test assignment
+    Input Text  xpath://label[text()="Description"]/following-sibling::textarea   test assignment description
+    Click Button    xpath://button[text()="Create"]
+    Wait Until Element Is Visible   xpath://tbody/tr[last()]//a[text()="test assignment"]    timeout=5s
+    Element Should Be Visible    xpath://tbody/tr[last()]//a[text()="test assignment"]
+
 *** Keywords ***
+Setup
+    Open Browser    http://127.0.0.1:8000    chrome
+    Maximize Browser Window
+
 CoureInfo Should Be
     [Arguments]    ${courseName}    ${instructorName}    ${courseTime}
     sleep    1s
