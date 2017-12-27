@@ -93,31 +93,23 @@ Grading Student homework (Instructor)
     Wait Until Page Contains Element    //*[@id="main-panel"]/div/div/div/div[2]/div/div[2]/div[1]/table/tbody/tr[1]/td[2]/a
     Element Should Be Visible    //*[@id="main-panel"]/div/div/div/div[2]/div/div[2]/div[1]/table/tbody/tr[3]/td[5]/span[contains(@class,"glyphicon glyphicon-remove")]
     Click Element    //*[@id="main-panel"]/div/div/div/div[2]/div/div[2]/div[1]/table/tbody/tr[3]/td[2]/a
-    sleep    1s
+    Wait Until Page Contains Element    //*[@id="main-panel"]/div/div/div/div/div/div[2]/div[1]/table/tbody/tr[1]/td[4]/input
     Input Text    //*[@id="main-panel"]/div/div/div/div/div/div[2]/div[1]/table/tbody/tr[1]/td[4]/input    50
     Click Element    //*[@id="main-panel"]/div/div/div/div/div/div[2]/div[2]/button
-    sleep    1s
+    Wait Until Page Contains Element    //*[@id="main-panel"]/div/div/div/div[2]/div/div[2]/div[1]/table/tbody/tr[3]/td[2]/a
     Click Element    //*[@id="main-panel"]/div/div/div/div[2]/div/div[2]/div[1]/table/tbody/tr[3]/td[2]/a
     sleep    1s
     Element Text Should Be    //*[@id="main-panel"]/div/div/div/div/div/div[2]/div[1]/table/tbody/tr[1]/td[4]    50
     Input Text    //*[@id="main-panel"]/div/div/div/div/div/div[2]/div[1]/table/tbody/tr[2]/td[4]/input    90
     Click Element    //*[@id="main-panel"]/div/div/div/div/div/div[2]/div[2]/button
-    sleep    1s
-    Click Element    //*[@id="main-panel"]/div/div/div/div[2]/div/div[2]/div[1]/table/tbody/tr[3]/td[2]/a
-    sleep    1s
-    Element Text Should Be    //*[@id="main-panel"]/div/div/div/div/div/div[2]/div[1]/table/tbody/tr[2]/td[4]    90
-    Click Element    //*[@id="sidebar"]/div[2]/a[2]
-    sleep    1s
-    Click Element    xpath://div[contains(@class, "card")]//b[text()="Software Engineering"]
-    sleep    1s
+    Wait Until Page Contains Element    //*[@id="main-panel"]/div/div/div/div[2]/div/div[2]/div[1]/table/tbody/tr[3]/td[5]/span[contains(@class,"glyphicon glyphicon-ok")]
     Element Should Be Visible    //*[@id="main-panel"]/div/div/div/div[2]/div/div[2]/div[1]/table/tbody/tr[3]/td[5]/span[contains(@class,"glyphicon glyphicon-ok")]
     Log out
     Click Element    //*[@id="app-mount"]/div/section/div/div/div/a
-    sleep    2s
     Login    joe    105598055
     Wait Until Page Contains Element    xpath://div[contains(@class,"card")]//div[@class="image"]
     Click Element    //*[@id="main-panel"]/div/div/div/div/div[2]/div/a/div[2]
-    sleep    1s
+    Wait Until Page Contains Element    //*[@id="main-panel"]/div/div/div/div/div/div[2]/div[1]/table/tbody/tr[3]/td[5]
     Element Text Should Be    //*[@id="main-panel"]/div/div/div/div/div/div[2]/div[1]/table/tbody/tr[3]/td[5]    90
     Log out
 
@@ -140,6 +132,7 @@ CoureInfo Should Be
 
 Login
     [Arguments]    ${username}    ${password}
+    Wait Until Page Contains Element    //*[@id="app-mount"]/div/section/div/div/div[1]/form/fieldset/div[3]/button
     Input Text    name=username    ${username}
     Input Text    name=password    ${password}
     Click Element    //*[@id="app-mount"]/div/section/div/div/div[1]/form/fieldset/div[3]/button
