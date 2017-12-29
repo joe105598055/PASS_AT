@@ -1,6 +1,7 @@
 *** Settings ***
+Suite Setup       First Time Setup
 Test Setup        Setup
-Test Teardown
+Test Teardown     Close Browser
 Library           Selenium2Library
 Library           OperatingSystem
 
@@ -19,6 +20,11 @@ Login with invalid user
     Login    Tom    123456789
     Element Text Should Be    //*[@id="app-mount"]/div/section/div/div/div[1]/form/div    Username and password combination not found or account is inactive.
 
+Login with wrong password
+    Login    andy    106598055
+    sleep    1s
+    Element Text Should Be    //*[@id="app-mount"]/div/section/div/div/div[1]/form/div    Username and password combination not found or account is inactive.
+
 Login after Logout
     Login    YC Chang    205598047
     Wait Until Page Contains Element    id=logoutBtn
@@ -29,46 +35,30 @@ Login after Logout
     Login    YC Chang    205598047
     Wait Until Page Contains Element    //*[@id="sidebar"]/div[2]/a[2]
     Element Text Should Be    //*[@id="sidebar"]/div[2]/a[2]    ASSIGNMENT SUBMISSION
+    Log out
 
 My Course Page (YC)
     Login    YC Chang    205598047
     CoureInfo Should Be    Pattern-Oriented Software Design    YC Chang    Wed 09:00 ~ 10:00, Fri 10:00 ~ 12:00
     sleep    1s
     Log out
-    Element Text Should Be    //*[@id="app-mount"]/div/section/div/div/div/div    Logout successful.
-    Click Element    //*[@id="app-mount"]/div/section/div/div/div/a
-    Login    YC Chang    205598047
 
 My Course Page (CH)
     Login    CH Liu    205598055
     CoureInfo Should Be    Software Engineering    CH Liu    Wed 09:00 ~ 10:00, Fri 10:00 ~ 12:00
     sleep    1s
+    Logout
 
-Submit Homework
-    Login    james    105598047
-    Wait Until Page Contains Element    xpath://div[contains(@class,"card")]//div[@class="image"]
-    Click Element    xpath://div[contains(@class, "card")]//b[text()="Software Engineering"]
-    Wait Until Page Contains Element    xpath://h4[text()="Software Engineering"]
-    Click Element    xpath://td[text()="Assignment 4"]/..//button
-
-Create Assignment
-    Login    YC Chang    205598047
-    Wait Until Page Contains Element    xpath://div[contains(@class,"card")]//div[@class="image"]
-    Click Element    xpath://div[contains(@class, "card")]//b[text()="Pattern-Oriented Software Design"]
-    Wait Until Page Contains Element    xpath://div[@class="navbar-header"]/a[text()="Assignments"]
-    Wait Until Element Is Visible    xpath://button[text()="Create an New Assignment"]
-    Click Button    xpath://button[text()="Create an New Assignment"]
-    Wait Until Element Is Visible    xpath://div[contains(@class, "modal-dialog")]
-    Input Text    xpath://label[text()="Name"]/following-sibling::input    test assignment
-    Input Text    xpath://label[text()="Description"]/following-sibling::textarea    test assignment description
-    Click Button    xpath://button[text()="Create"]
-    Wait Until Element Is Visible    xpath://tbody/tr[last()]//a[text()="test assignment"]    timeout=5s
-    Element Should Be Visible    xpath://tbody/tr[last()]//a[text()="test assignment"]
+My Course Page (WK)
+    Login    WK Chen    205598054
+    CoureInfo Should Be    Object-Oriented Analysis and Design    WK Chen    Wed 09:00 ~ 10:00, Fri 10:00 ~ 12:00
+    sleep    1s
+    Log out
 
 Download student homework (Instructor)
     Login    CH Liu    205598055
-    Wait Until Page Contains Element    xpath://div[contains(@class,"card")]//div[@class="image"]
-    Click Element    xpath://div[contains(@class, "card")]//b[text()="Software Engineering"]
+    Wait Until Page Contains Element    //*[@id="main-panel"]/div/div/div/div/div
+    Click Element    //*[@id="main-panel"]/div/div/div/div/div
     Wait Until Page Contains Element    //*[@id="main-panel"]/div/div/div/div[2]/div/div[2]/div[1]/table/tbody/tr[1]/td[2]/a
     sleep    1s
     Click Element    //*[@id="main-panel"]/div/div/div/div[2]/div/div[2]/div[1]/table/tbody/tr[3]/td[2]/a
@@ -77,19 +67,76 @@ Download student homework (Instructor)
     Homework Should be download    105598055.txt
     Log out
 
+Cannot submit after due date (Student)
+    Login    andy    106598054
+    Wait Until Page Contains Element    //div[@class='card card-course box-shadow-effects']
+    Click Element    //div[@class='card card-course box-shadow-effects']
+    Wait Until Page Contains Element    //button[@class='btn btn-default']
+    Element Should Be Visible    //span[@class="glyphicon glyphicon-remove"]
+    Logout
+
 Download own homework (Student)
     Login    james    105598047
-    Wait Until Page Contains Element    xpath://div[contains(@class,"card")]//div[@class="image"]
-    Click Element    xpath://div[contains(@class, "card")]//b[text()="Software Engineering"]
+    Wait Until Page Contains Element    //*[@id="main-panel"]/div/div/div/div/div[2]
+    Click Element    //*[@id="main-panel"]/div/div/div/div/div[2]
     sleep    1s
     Click Element    //*[@id="main-panel"]/div/div/div/div/div/div[2]/div[1]/table/tbody/tr[1]/td[6]/button
     Homework Should be download    105598047.txt
     Log out
 
+Create Assignment (Instructor)
+    Login    YC Chang    205598047
+    Wait Until Page Contains Element    //*[@id="main-panel"]/div/div/div/div/div
+    Click Element    //*[@id="main-panel"]/div/div/div/div/div
+    Wait Until Page Contains Element    //*[@id="main-panel"]/div/div/div/div[1]/div/div[2]/div[1]/button
+    Wait Until Element Is Visible    //*[@id="main-panel"]/div/div/div/div[1]/div/div[2]/div[1]/button
+    Click Button    //*[@id="main-panel"]/div/div/div/div[1]/div/div[2]/div[1]/button
+    sleep    1s
+    Input Text    //*[@id="formControlsText"]    test assignment
+    Input Text    //*[@id="formControlsTextarea"]    test assignment description
+    sleep    1s
+    Click Button    //*[@id="createAssignment"]
+    Wait Until Element Is Visible    //*[@id="main-panel"]/div/div/div/div[2]/div/div[2]/div[1]/table/tbody/tr[7]/td[2]/a    timeout=5s
+    Element Should Contain    //*[@id="main-panel"]/div/div/div/div[2]/div/div[2]/div[1]/table/tbody/tr[7]/td[2]/a    test assignment
+    Logout
+    Click Element    //*[@id="app-mount"]/div/section/div/div/div/a
+    Login    joe    105598055
+    Wait Until Page Contains Element    //*[@id="main-panel"]/div/div/div/div/div
+    Click Element    //*[@id="main-panel"]/div/div/div/div/div[1]
+    sleep    1s
+    Element Should Contain    //*[@id="main-panel"]/div/div/div/div/div/div[2]/div[1]/table/tbody/tr[7]/td[2]    test assignment
+    Logout
+    First Time Setup
+
+Submit Homework (Student)
+    Login    andy    106598054
+    Wait Until Page Contains Element    //div[@class='card card-course box-shadow-effects']
+    Click Element    //div[@class='card card-course box-shadow-effects']
+    Wait Until Page Contains Element    //button[@class='btn btn-default']
+    Click Element    //button[@class='btn btn-default']
+    sleep    1s
+    Choose file    xpath=.//div/input    ${CURDIR}${/}106598054.txt
+    sleep    1s
+    Click Element    //*[@id="uploadBtn"]
+    Wait Until Page Contains Element    //button[text()='106598054.txt']
+    Element Should Be Visible    //span[@class="glyphicon glyphicon-ok"]
+    Logout
+    Click Element    //*[@id="app-mount"]/div/section/div/div/div/a
+    Wait Until Page Contains Element    //button[text()='Sign in']
+    Login    CH Liu    205598055
+    Wait Until Page Contains Element    //div[@class='card card-course box-shadow-effects']
+    Click Element    //div[@class='card card-course box-shadow-effects']
+    Wait Until Page Contains Element    //td/a[text()='Assignment 4']
+    Click Element    //td/a[text()='Assignment 4']
+    Wait Until Page Contains Element    //button[text()='Grading']
+    Element Should Be Visible    //button[@class='btn btn-link']
+    Logout
+    First Time Setup
+
 Grading Student homework (Instructor)
     Login    CH Liu    205598055
-    Wait Until Page Contains Element    xpath://div[contains(@class,"card")]//div[@class="image"]
-    Click Element    xpath://div[contains(@class, "card")]//b[text()="Software Engineering"]
+    Wait Until Page Contains Element    //*[@id="main-panel"]/div/div/div/div/div
+    Click Element    //*[@id="main-panel"]/div/div/div/div/div
     Wait Until Page Contains Element    //*[@id="main-panel"]/div/div/div/div[2]/div/div[2]/div[1]/table/tbody/tr[1]/td[2]/a
     Element Should Be Visible    //*[@id="main-panel"]/div/div/div/div[2]/div/div[2]/div[1]/table/tbody/tr[3]/td[5]/span[contains(@class,"glyphicon glyphicon-remove")]
     Click Element    //*[@id="main-panel"]/div/div/div/div[2]/div/div[2]/div[1]/table/tbody/tr[3]/td[2]/a
@@ -107,16 +154,38 @@ Grading Student homework (Instructor)
     Log out
     Click Element    //*[@id="app-mount"]/div/section/div/div/div/a
     Login    joe    105598055
-    Wait Until Page Contains Element    xpath://div[contains(@class,"card")]//div[@class="image"]
+    Wait Until Page Contains Element    //*[@id="main-panel"]/div/div/div/div/div
     Click Element    //*[@id="main-panel"]/div/div/div/div/div[2]/div/a/div[2]
     Wait Until Page Contains Element    //*[@id="main-panel"]/div/div/div/div/div/div[2]/div[1]/table/tbody/tr[3]/td[5]
     Element Text Should Be    //*[@id="main-panel"]/div/div/div/div/div/div[2]/div[1]/table/tbody/tr[3]/td[5]    90
     Log out
+    First Time Setup
 
-test
-    Comment    ${output}    Run    cd /d D:${/}Project${/}aqua & npm run first-time-setup
-    Comment    log    ${output}
-    Comment    sleep    2s
+Resubmit homework (Student)
+    Login    andy    106598054
+    Wait Until Page Contains Element    //div[@class='card card-course box-shadow-effects']
+    Click Element    //div[@class='card card-course box-shadow-effects']
+    Wait Until Page Contains Element    //button[@class='btn btn-default']
+    Click Element    //button[@class='btn btn-default']
+    sleep    1s
+    Choose file    xpath=.//div/input    ${CURDIR}${/}106598054.txt
+    sleep    1s
+    Click Element    //*[@id="uploadBtn"]
+    Wait Until Page Contains Element    //button[text()='106598054.txt']
+    Element Should Be Visible    //span[@class="glyphicon glyphicon-ok"]
+    sleep    1s
+    Click Element    //button[@class='btn btn-default']
+    Wait Until Page Contains Element    //button[text()='Choose File']
+    Choose file    xpath=.//div/input    ${CURDIR}${/}106598054.txt
+    Wait Until Page Contains Element    //*[@id="uploadBtn"]
+    Click Element    //*[@id="uploadBtn"]
+    Wait Until Page Contains Element    //button[text()='106598054.txt']
+    Element Should Be Visible    //span[@class="glyphicon glyphicon-ok"]
+    sleep    1s
+    Click Element    //button[text()='106598054.txt']
+    Homework Should be download    106598054.txt
+    Logout
+    First Time Setup
 
 *** Keywords ***
 Setup
@@ -138,6 +207,7 @@ Login
     Click Element    //*[@id="app-mount"]/div/section/div/div/div[1]/form/fieldset/div[3]/button
 
 Log out
+    sleep    1s
     Click Element    id=logoutBtn
     sleep    2s
 
@@ -151,3 +221,8 @@ Homework Should be download
     Remove File    ${path5}${/}Downloads${/}${fileName}
 
 submit homework
+
+First Time Setup
+    ${path}    ${path2}    Split Path    ${CURDIR}
+    ${result}    Run    cd ${path}&npm run first-time-setup
+    log    ${result}
